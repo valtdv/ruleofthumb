@@ -1,4 +1,5 @@
 export interface Person {
+  id: String
   name: String
   description: String
   category: String

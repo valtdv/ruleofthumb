@@ -16,7 +16,7 @@ export const usePeopleStore = defineStore('people', {
       this.peopleData = data
     },
     fetchPeopleData() {
-      PeopleService.getAll().then((resp: Person[]) => {
+      PeopleService.getAll().then((resp: Person[]) => {        
         this.setPeopleData(resp)
       });
     },

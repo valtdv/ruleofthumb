@@ -19,18 +19,20 @@
           <span v-if="hasVoted">Thank you for your vote!</span>
           <span v-else>{{ date }} ago in {{ person.category }}</span>
         </p>
-        <button v-if="hasVoted" class="card__btn" data-testid="vote-again-btn" @click="voteAgain">Vote again</button>
+        <button v-if="hasVoted" class="card__btn" data-testid="vote-again-btn" @click="voteAgain">
+          Vote again
+        </button>
         <form v-else class="card__form" action="" data-testid="form" @submit.prevent="sendVote">
           <input
             v-model="vote"
             class="card__input"
             type="radio"
             name="vote"
-            id="upvote"
+            :id="upvoteId"
             data-testid="upvote"
             value="upvote"
           />
-          <label class="card__label upvote" for="upvote">
+          <label class="card__label upvote" :for="upvoteId">
             <img src="../assets/img/thumbs-up.svg" alt="thumbs up" />
           </label>
           <input
@@ -38,14 +40,21 @@
             class="card__input"
             type="radio"
             name="vote"
-            id="downvote"
+            :id="downvoteId"
             data-testid="downvote"
             value="downvote"
           />
-          <label class="card__label downvote" for="downvote">
+          <label class="card__label downvote" :for="downvoteId">
             <img src="../assets/img/thumbs-down.svg" alt="thumbs down" />
           </label>
-          <button class="card__btn" data-testid="vote-btn" type="submit" :disabled="vote === undefined">Vote Now</button>
+          <button
+            class="card__btn"
+            data-testid="vote-btn"
+            type="submit"
+            :disabled="vote === undefined"
+          >
+            Vote Now
+          </button>
         </form>
       </div>
     </div>
@@ -53,8 +62,12 @@
     <div class="card__footer">
       <div class="card__gauge-bar">
         <div class="card__percentages">
-          <span class="card__percentage" data-testid="positive-percentage">{{ positivePercentage }}%</span>
-          <span class="card__percentage" data-testid="negative-percentage">{{ negativePercentage }}%</span>
+          <span class="card__percentage" data-testid="positive-percentage"
+            >{{ positivePercentage }}%</span
+          >
+          <span class="card__percentage" data-testid="negative-percentage"
+            >{{ negativePercentage }}%</span
+          >
         </div>
         <progress class="card__progress-bar" :value="positiveVotes" :max="total"></progress>
       </div>
@@ -63,6 +76,8 @@
 </template>
 
 <script setup lang="ts">
+import { PeopleService } from '@/services/people.service';
+import { usePeopleStore } from '@/stores/people'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -76,8 +91,12 @@ const props = defineProps({
   }
 })
 
+const peopleStore = usePeopleStore()
+
 const hasVoted = ref(false)
 const vote = ref()
+const upvoteId = `upvote-${props.person.id}`
+const downvoteId = `downvote-${props.person.id}`
 
 // Time passed since last update
 
@@ -99,17 +118,45 @@ if (dayDifference > 30 && dayDifference < 365) {
 }
 
 // Percentage calculations for gauge bar
+const positivePercentage = ref()
+const negativePercentage = ref()
+const total = ref()
 
-const positiveVotes = props.person.votes.positive
-const negativeVotes = props.person.votes.negative
-const total = positiveVotes + negativeVotes
+const positiveVotes = ref(props.person.votes.positive)
+const negativeVotes = ref(props.person.votes.negative)
 
-const positivePercentage = Math.round((positiveVotes * 100) / total)
-const negativePercentage = Math.round((negativeVotes * 100) / total)
+const calcultaPercentages = () => {
+  total.value = positiveVotes.value + negativeVotes.value
+  positivePercentage.value = ((positiveVotes.value * 100) / total.value).toFixed(2)
+  negativePercentage.value = ((negativeVotes.value * 100) / total.value).toFixed(2)
+}
+
+calcultaPercentages()
 
 // Methods
 
 const sendVote = () => {
+  let newVotes: Object
+  const name = props.person.name
+  
+  if (vote.value === 'upvote') {
+    positiveVotes.value = positiveVotes.value + 1
+  } else {
+    negativeVotes.value = negativeVotes.value + 1
+  }
+
+  newVotes = {
+    votes: {
+      positive: positiveVotes.value,
+      negative: negativeVotes.value
+    }
+  }
+
+  calcultaPercentages()
+
+  peopleStore.updatePeople(name, newVotes)
+  
+  PeopleService.updateData(props.person.id, newVotes)
   hasVoted.value = true
 }
 
@@ -256,9 +303,17 @@ const voteAgain = () => {
   }
 
   .card.list {
+    margin-bottom: 14px;
     padding-top: 0;
     width: 100%;
     height: 142px;
+    background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.0001) 0%,
+    #888888 19.79%,
+    #666666 50%,
+    rgba(51, 51, 51, 0.6) 71.88%
+  );
 
     .card__content {
       display: flex;
@@ -307,6 +362,7 @@ const voteAgain = () => {
   }
 
   .card.list {
+    margin-bottom: 18px;
     height: 170px;
 
     .card__person-info {
