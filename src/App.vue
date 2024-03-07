@@ -89,7 +89,7 @@ onMounted(() => {
   }
 }
 
-@media (min-width: 798px) {
+@media (min-width: 600px) {
   .main-section {
     &__content {
       display: block;
@@ -108,7 +108,7 @@ onMounted(() => {
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .main-section {
     &__content.grid-view {
       grid-template-columns: 1fr 1fr 1fr;

@@ -2,6 +2,9 @@
   <div
     class="card"
     :class="{ list: isListView }"
+    :title="`${person.name} Card`"
+    :aria-label="`${person.name} card`"
+    :tabindex="person.id"
     data-testid="card"
     :style="{ backgroundImage: `url('${src}')` }"
   >
@@ -28,7 +31,13 @@
             <span v-if="hasVoted">Thank you for your vote!</span>
             <span v-else>{{ date }} ago in {{ person.category }}</span>
           </p>
-          <button v-if="hasVoted" class="card__btn" data-testid="vote-again-btn" @click="voteAgain">
+          <button
+            v-if="hasVoted"
+            class="card__btn"
+            data-testid="vote-again-btn"
+            title="Vote again"
+            @click="voteAgain"
+          >
             Vote again
           </button>
           <form v-else class="card__form" action="" data-testid="form" @submit.prevent="sendVote">
@@ -38,10 +47,13 @@
               type="radio"
               name="vote"
               :id="upvoteId"
+              title="Upvote option"
+              aria-label="upvote option"
               data-testid="upvote"
               value="upvote"
             />
-            <label class="card__label upvote" :for="upvoteId">
+            <label class="card__label upvote" title="Upvote" aria-label="upvote" :for="upvoteId">
+              <span class="sr-only">Upvote</span>
               <img src="../assets/img/thumbs-up.svg" alt="thumbs up" />
             </label>
             <input
@@ -50,15 +62,24 @@
               type="radio"
               name="vote"
               :id="downvoteId"
+              title="Downvote option"
+              aria-label="downvote-option"
               data-testid="downvote"
               value="downvote"
             />
-            <label class="card__label downvote" :for="downvoteId">
+            <label
+              class="card__label downvote"
+              title="Downvote"
+              aria-label="downvote"
+              :for="downvoteId"
+            >
+              <span class="sr-only">Downvote</span>
               <img src="../assets/img/thumbs-down.svg" alt="thumbs down" />
             </label>
             <button
               class="card__btn"
               data-testid="vote-btn"
+              title="Vote"
               type="submit"
               :disabled="vote === undefined"
             >
@@ -187,6 +208,17 @@ const voteAgain = () => {
   color: white;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .card {
   position: relative;
   width: 300px;
@@ -265,7 +297,12 @@ const voteAgain = () => {
   }
 
   &__input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+  }
+
+  &__input:focus + label {
+    box-shadow: 0 0 3px 1px blue;
   }
 
   &__input:checked + label {
@@ -335,8 +372,9 @@ const voteAgain = () => {
   }
 }
 
-@media (min-width: 798px) {
+@media (min-width: 600px) {
   .card {
+    margin: auto;
     width: 351px;
     height: 351px;
   }
@@ -399,7 +437,7 @@ const voteAgain = () => {
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .card {
     width: 349px;
     height: 349px;
