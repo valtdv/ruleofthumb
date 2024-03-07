@@ -1,52 +1,103 @@
-# ruleofthumb
+# Test Frontend role - Rule of thumb
 
-This template should help get you started developing with Vue 3 in Vite.
+This project consists in the implementation of Rule of thumb designs and missing features
 
-## Recommended IDE Setup
+## Technologies
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- Typescript
+- Vue.js
+- Vitest
+- Vue test utils
+- Pinia
+- Json server
 
 ## Project Setup
+
+### Clone repository in your terminal
+
+```sh
+git clone git@github.com:valtdv/ruleofthumb.git
+```
+
+### Install dependencies
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Run the API server in one tab
+
+```sh
+npm run server
+```
+
+### Run dev server in another tab
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Run Unit Tests
 
 ```sh
 npm run test:unit
 ```
+## API
 
-### Lint with [ESLint](https://eslint.org/)
+### GET ```/data```
+
+Example response
 
 ```sh
-npm run lint
+[
+    {
+      "id": "1",
+      "name": "Kanye West",
+      "description": "Born in Atlanta and raised in Chicago, West was first known as a producer for Roc-A-Fella Records in the early 2000s, producing singles for several mainstream artists.",
+      "category": "entertainment",
+      "picture": "kanye.png",
+      "lastUpdated": "2020-03-10T23:08:57.892Z",
+      "votes": {
+        "positive": 24,
+        "negative": 36
+      }
+    }
+]
+```
+
+### PATCH ```/data/:id```
+
+Example request url
+
+```sh
+${API_URL}/data/1
+```
+
+Example request body
+
+```sh
+{
+    votes: {
+        positive: 24,
+        negative: 36
+    }
+}
+```
+
+Example respone
+
+```sh
+{
+      id: '1'
+      name: 'Kanye West',
+      description:
+        'Born in Atlanta and raised in Chicago, West was first known as a producer for Roc-A-Fella Records in the early 2000s, producing singles for several mainstream artists.',
+      category: 'entertainment',
+      picture: 'kanye.png',
+      lastUpdated: '2020-03-10T23:08:57.892Z',
+      votes: {
+        positive: 23,
+        negative: 36
+      }
+}
 ```
