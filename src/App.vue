@@ -75,7 +75,7 @@ onMounted(() => {
   &__content {
     display: flex;
     gap: 12px;
-    overflow: scroll;
+    overflow-x: scroll;
   }
 
   &__select {
@@ -99,6 +99,7 @@ onMounted(() => {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 21px;
+      overflow-x: initial;
     }
 
     &__select {
