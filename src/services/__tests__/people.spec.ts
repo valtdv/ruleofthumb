@@ -39,8 +39,10 @@ describe('People service', () => {
     }
 
     const newVotes = {
-      positive: 24,
-      negative: 36
+      votes: {
+        positive: 24,
+        negative: 36
+      }
     }
 
     fetchMocker.mockResponseOnce(JSON.stringify(mockAnswer))
